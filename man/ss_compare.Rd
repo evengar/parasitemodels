@@ -45,7 +45,8 @@ ss_compare(y, func, ss_func, parms, method = "runsteady", ...)
 }
 \value{
 A list of two named numeric vectors, containing the analytical (anl)
-and numerical (num) solutions, respectively.
+and numerical (num) solutions, respectively. The list has an attribute
+"equal" which tells whether the two solutions are equal using ss_eval()
 }
 \description{
 Uses a user-input function for solving a set of ODEs analytically, and

@@ -9,11 +9,14 @@
 #' @param ... Additional arguments passed to rootSolve::steady
 #'
 #' @return A list of two named numeric vectors, containing the analytical (anl)
-#' and numerical (num) solutions, respectively.
+#' and numerical (num) solutions, respectively. The list has an attribute
+#' "equal" which tells whether the two solutions are equal using ss_eval()
 #' @export
 
 ss_compare <- function(y, func, ss_func, parms, method = "runsteady", ...){
     ss_analytical <- ss_func(parms)
     ss_numerical <- rootSolve::steady(y = y, func = func, parms = parms, method = method, ...)
-    return(list(anl = unlist(ss_analytical), num = ss_numerical$y))
+    ss <- list(anl = unlist(ss_analytical), num = ss_numerical$y)
+    attr(ss, "equal") <- ss_eval(ss)
+    return(ss)
 }
