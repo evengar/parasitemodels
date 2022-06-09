@@ -14,7 +14,7 @@
 #'
 #' @examples
 ss_compare <- function(y, func, ss_func, parms, method = "runsteady", ...){
-    ss_analytical <- ss.func(parms)
-    ss_numerical <- steady(y = init, func = mod, parms = parms, method = method, ...)
+    ss_analytical <- ss_func(parms)
+    ss_numerical <- rootSolve::steady(y = y, func = func, parms = parms, method = method, ...)
     return(list(anl = unlist(ss_analytical), num = ss_numerical$y))
 }
