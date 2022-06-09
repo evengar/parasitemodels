@@ -25,7 +25,7 @@ calanus_par <- list(
   f = 1
 )
 
-params <- onc_par
+param_names <- names(onc_par)
 
 times <- 1:999
 
@@ -88,6 +88,7 @@ server <- function(input, output) {
     })
 
     # set up input sliders
+    # scaling slider ranges to input size
     output$parsliders <- shiny::renderUI({
         params <- parset()
         lapply(seq_along(params), function(x, y, i){
@@ -105,10 +106,10 @@ server <- function(input, output) {
 
     # get current parameters
     parameters <- shiny::reactive({
-        current <- sapply(seq_along(names(params)), function(i){
-            input[[names(params)[[i]]]]
+        current <- sapply(seq_along(param_names), function(i){
+            input[[param_names[[i]]]]
         })
-        setNames(current, names(params))
+        setNames(current, param_names)
     })
 
 
