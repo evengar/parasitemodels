@@ -10,10 +10,25 @@ ss_AM81_BFG(par)
 \item{par}{parameters of the model}
 }
 \value{
-
+A named numeric vector with the steady state of the three state variables H, Y and W
 }
 \description{
 Get analytical steady state of model B+F+G from Anderson & May (1981) by solving a 2nd degree polynomial.
 If the polynomial has comlpex roots, the function will return the parasite-free
 steady state.
+}
+\examples{
+onc_par <- c(
+    r = 0.1553797192,
+    b = 0.09523809524,
+    K = 10,
+    v = 0.000888360697,
+    g = 0,
+    a = 0.0398970399,
+    m = 0.3372620127,
+    L = 360,
+    f = 1
+)
+
+ss_AM81_BFG(onc_par)
 }
