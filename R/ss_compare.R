@@ -11,8 +11,7 @@
 #' @return A list of two named numeric vectors, containing the analytical (anl)
 #' and numerical (num) solutions, respectively.
 #' @export
-#'
-#' @examples
+
 ss_compare <- function(y, func, ss_func, parms, method = "runsteady", ...){
     ss_analytical <- ss_func(parms)
     ss_numerical <- rootSolve::steady(y = y, func = func, parms = parms, method = method, ...)
