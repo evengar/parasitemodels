@@ -21,9 +21,9 @@
 #'     f = 1
 #'     )
 #'
-#' get_R0(onc_par)
+#' r0(onc_par)
 #'
-get_R0 <- function(pars){
+r0 <- function(pars){
     with(as.list(pars), {
         (L - 1) * ((r - b) / r) * ((v * K)/m)
     })
