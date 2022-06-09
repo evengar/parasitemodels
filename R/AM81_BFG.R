@@ -6,7 +6,7 @@
 #' @param x current estimate of the variables in the ODE system
 #' @param parms parameters of the model
 #'
-#' @return
+#' @return list of derivatives of state variables
 #' @export
 #'
 #' @examples
@@ -30,7 +30,8 @@
 #' times <- 1:1000
 #'
 #' # pass function as `func` argument to deSolve::ode()
-#' ode(parms = onc_par, times = times, y = init, func = AM81_BFG)
+#'
+#' deSolve::ode(parms = onc_par, times = times, y = init, func = AM81_BFG)
 #'
 #'
 AM81_BFG <- function(t, x, parms){

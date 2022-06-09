@@ -14,7 +14,7 @@ AM81_BFG(t, x, parms)
 \item{parms}{parameters of the model}
 }
 \value{
-
+list of derivatives of state variables
 }
 \description{
 A function to be passed to a \code{deSolve} ODE solver. Not for standalone use!
@@ -40,7 +40,8 @@ init <- c(
 times <- 1:1000
 
 # pass function as `func` argument to deSolve::ode()
-ode(parms = onc_par, times = times, y = init, func = AM81_BFG)
+
+deSolve::ode(parms = onc_par, times = times, y = init, func = AM81_BFG)
 
 
 }
