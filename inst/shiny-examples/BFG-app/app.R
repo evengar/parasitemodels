@@ -80,45 +80,62 @@ ui <- shiny::fluidPage(
 
 server <- function(input, output) {
 
+    # react to input parameter set
     parset <- shiny::reactive({
-      if(input$parset == "onc"){
-        return(onc_par)
-      }
-      if(input$parset == "cal"){
-        return(calanus_par)
-      }
-      return(onc_par)
+        switch(input$parset,
+               onc = return(onc_par),
+               cal = return(calanus_par))
     })
 
-    plotsteady <- reactiveVal(TRUE)
-    observeEvent(input$toggle, {
+    # set up input sliders
+    output$parsliders <- shiny::renderUI({
+        params <- parset()
+        lapply(seq_along(params), function(x, y, i){
+            shiny::sliderInput(paste0(y[[i]]),
+                               paste0(y[[i]]),
+                               min = 0,
+                               max = ifelse(x[[i]]<0.01 & x[[i]] > 0, 0.01,
+                                            ifelse(x[[i]] <= 1, 1,
+                                                   x[[i]]*2)),
+                               value = x[[i]]
+            )
+        }, x = params, y = names(params))
+    })
+
+
+    # get current parameters
+    parameters <- shiny::reactive({
+        current <- sapply(seq_along(names(params)), function(i){
+            input[[names(params)[[i]]]]
+        })
+        setNames(current, names(params))
+    })
+
+
+
+    # get current initial values
+    initial <- shiny::reactive({
+        current <- sapply(seq_along(names(init)), function(i){
+            input[[names(init)[[i]]]]
+        })
+        setNames(current, names(init))
+    })
+
+
+    # setup button for toggling ss visualization
+    plotsteady <- shiny::reactiveVal(TRUE)
+    shiny::observeEvent(input$toggle, {
         plotsteady(!plotsteady())
     })
 
-
-    steady <- reactive({
-        params <- parset()
-        parms <- sapply(seq_along(names(params)), function(i){
-            input[[names(params)[[i]]]]
-        })
-        names(parms) <- names(params)
-        ss_AM81_BFG(parms)
+    # get current steady state
+    steady <- shiny::reactive({
+        ss_AM81_BFG(parameters())
     })
 
-
+    # create visualization
     output$modplot <- shiny::renderPlot({
-        params <- parset()
-        parms <- sapply(seq_along(names(params)), function(i){
-            input[[names(params)[[i]]]]
-        })
-        names(parms) <- names(params)
-
-        init2 <- sapply(seq_along(names(init)), function(i){
-            input[[names(init)[[i]]]]
-        })
-        names(init2) <- names(init)
-
-        modl <- deSolve::ode(y = init2, times = times, parms = parms, func = mod)
+        modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod)
         modl <- as.data.frame(modl)
         par(mfrow = c(2, 2))
 
@@ -156,36 +173,20 @@ server <- function(input, output) {
 
 
     output$parms <- shiny::renderText({
-        params <- parset()
-        parms_temp <- sapply(seq_along(names(params)), function(i){
-            paste0(names(params)[[i]], " = ", input[[names(params)[[i]]]])
-        })
-        paste0("parms <- c(", paste0(parms_temp, collapse = ", "), ")")
+        params <- parameters()
+        parmassign <- paste0(names(params), " = ", params)
+        paste0("parms <- c(", paste0(parmassign, collapse = ", "), ")")
     })
 
 
 
     output$init <- shiny::renderText({
-
-        init_temp <- sapply(seq_along(names(init)), function(i){
-            paste0(names(init)[[i]], " = ", input[[names(init)[[i]]]])
-        })
-        paste0("init <- c(", paste0(init_temp, collapse = ", "), ")")
+        inits <- initial()
+        initassign <- paste0(names(inits), " = ", inits)
+        paste0("init <- c(", paste0(initassign, collapse = ", "), ")")
     })
 
-    output$parsliders <- shiny::renderUI({
-      params <- parset()
-      lapply(seq_along(params), function(x, y, i){
-          shiny::sliderInput(paste0(y[[i]]),
-                    paste0(y[[i]]),
-                    min = 0,
-                    max = ifelse(x[[i]]<0.01, 0.01,
-                                 ifelse(x[[i]] <= 1, 1,
-                                        x[[i]]*2)),
-                    value = x[[i]]
-        )
-      }, x = params, y = names(params))
-    })
+
 }
 
 # Run the application
