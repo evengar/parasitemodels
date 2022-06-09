@@ -2,4 +2,5 @@
 
 export(AM81_BFG)
 export(get_R0)
+export(run_model)
 export(ss_AM81_BFG)
