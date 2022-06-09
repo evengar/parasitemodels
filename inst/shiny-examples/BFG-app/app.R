@@ -72,6 +72,7 @@ ui <- shiny::fluidPage(
                 max = length(times),
                 value = c(0,length(times)),
                 step = 1),
+    shiny::checkboxInput("toggle", "Show analytical steady state"),
     shiny::textOutput("parms"),
     shiny::textOutput("init")
 )
@@ -89,6 +90,21 @@ server <- function(input, output) {
       return(onc_par)
     })
 
+    plotsteady <- reactiveVal(TRUE)
+    observeEvent(input$toggle, {
+        plotsteady(!plotsteady())
+    })
+
+
+    steady <- reactive({
+        params <- parset()
+        parms <- sapply(seq_along(names(params)), function(i){
+            input[[names(params)[[i]]]]
+        })
+        names(parms) <- names(params)
+        ss_AM81_BFG(parms)
+    })
+
 
     output$modplot <- shiny::renderPlot({
         params <- parset()
@@ -102,15 +118,38 @@ server <- function(input, output) {
         })
         names(init2) <- names(init)
 
-        mod <- deSolve::ode(y = init2, times = times, parms = parms, func = mod)
+        modl <- deSolve::ode(y = init2, times = times, parms = parms, func = mod)
+        modl <- as.data.frame(modl)
+        par(mfrow = c(2, 2))
 
-        plot(mod, xlim = input$xlim)
-        plot(mod[, "time"], mod[,"Y"]/mod[,"H"],
+        ss <- steady()
+
+        plot(H ~ time, data = modl, xlim = input$xlim, type = "l",
+             ylab = "Total host population H (ind/L)",
+             xlab = "Time (days)")
+        if(plotsteady()){
+            abline(h = ss[1], col = 2, lty = 2)
+        }
+        plot(Y ~ time, data = modl, xlim = input$xlim, type = "l",
+             ylab = "Infected hosts Y (ind/L)",
+             xlab = "Time (days)")
+        if(plotsteady()){
+            abline(h = ss[2], col = 2, lty = 2)
+        }
+        plot(W ~ time, data = modl, xlim = input$xlim, type = "l",
+             ylab = "Free-living parasites W (ind/L)",
+             xlab = "Time (days)")
+        if(plotsteady()){
+            abline(h = ss[3], col = 2, lty = 2)
+        }
+        plot(modl[, "time"], modl[,"Y"]/modl[,"H"],
              xlim = input$xlim,
              type = "l",
              xlab = "time",
-             ylab = "",
-             main = "Y/H")
+             ylab = "Parasite prevalence Y/H")
+        if(plotsteady()){
+            abline(h = ss[2]/ss[1], col = 2, lty = 2)
+        }
 
     }, height = 600)
 
@@ -123,6 +162,8 @@ server <- function(input, output) {
         })
         paste0("parms <- c(", paste0(parms_temp, collapse = ", "), ")")
     })
+
+
 
     output$init <- shiny::renderText({
 
