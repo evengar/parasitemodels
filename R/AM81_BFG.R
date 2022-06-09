@@ -1,3 +1,15 @@
+#' Model B + F + G from Anderson & May (1981)
+#'
+#' A function to be passed to a `deSolve` ODE solver. Not for standalone use!
+#'
+#' @param t current time point in the intergration
+#' @param x current estimate of the variables in the ODE system
+#' @param parms parameters of the model
+#'
+#' @return
+#' @export
+#'
+#' @examples
 AM81_BFG <- function(t, x, parms){
     with(as.list(c(parms,x)), {
 
