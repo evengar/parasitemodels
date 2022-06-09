@@ -19,3 +19,28 @@ AM81_BFG(t, x, parms)
 \description{
 A function to be passed to a \code{deSolve} ODE solver. Not for standalone use!
 }
+\examples{
+
+onc_par <- c(
+    r = 0.1553797192,
+    b = 0.09523809524,
+    K = 10,
+    v = 0.000888360697,
+    g = 0,
+    a = 0.0398970399,
+    m = 0.3372620127,
+    L = 360,
+    f = 1
+)
+init <- c(
+    H = 0.1,
+    Y = 0.0,
+    W = 0.000001
+)
+times <- 1:1000
+
+# pass function as `func` argument to deSolve::ode()
+ode(parms = onc_par, times = times, y = init, func = AM81_BFG)
+
+
+}
