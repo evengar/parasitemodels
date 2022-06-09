@@ -4,14 +4,13 @@
 \alias{ss_eval}
 \title{Evaluate if two steady state solutions are equal}
 \usage{
-ss_eval(ss_comp, tolerance = 0.001)
+ss_eval(ss_comp, tolerance = 1e-04)
 }
 \arguments{
 \item{ss_comp}{A list of two vectors to be compared, typically the output of ss_compare()}
 
-\item{tolerance}{numeric \eqn{\ge} 0.  Differences smaller than
-    \code{tolerance} are not reported.  The default value is close to
-    \code{1.5e-8}.}
+\item{tolerance}{numeric ≥ 0. Differences smaller than tolerance are not reported. The default value is set larger
+than the regular default for all.equal.}
 }
 \value{
 

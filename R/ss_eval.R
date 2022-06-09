@@ -5,11 +5,13 @@
 #' because slight deviations are expected. The function should in theory work for any list of length 2.
 #'
 #' @param ss_comp A list of two vectors to be compared, typically the output of ss_compare()
-#' @inheritParams base::all.equal
+#'
+#' @param tolerance numeric ≥ 0. Differences smaller than tolerance are not reported. The default value is set larger
+#' than the regular default for all.equal.
 #'
 #' @return
 #' @export
-ss_eval <- function(ss_comp, tolerance = 10e-4){
+ss_eval <- function(ss_comp, tolerance = 1e-4){
     stopifnot(length(ss_comp) == 2)
     isTRUE(all.equal(ss_comp[[1]], ss_comp[[2]], tolerance = tolerance))
 }
