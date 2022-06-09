@@ -9,7 +9,7 @@
 #' @param tolerance numeric ≥ 0. Differences smaller than tolerance are not reported. The default value is set larger
 #' than the regular default for all.equal.
 #'
-#' @return
+#' @return A boolean value indicating if solutions are equal
 #' @export
 ss_eval <- function(ss_comp, tolerance = 1e-4){
     stopifnot(length(ss_comp) == 2)

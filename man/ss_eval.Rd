@@ -13,7 +13,7 @@ ss_eval(ss_comp, tolerance = 1e-04)
 than the regular default for all.equal.}
 }
 \value{
-
+A boolean value indicating if solutions are equal
 }
 \description{
 Compares the two elements of the output of ss_compare and uses all.equal to
