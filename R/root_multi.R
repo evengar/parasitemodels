@@ -7,7 +7,7 @@ get_R0_root <- function(pars, variable, variable_name){
 
 #' Find bifurcation point where R0 becomes 1 by varying a single parameter
 #'
-#' @inheritParams r0
+#' @inheritParams get_R0
 #'
 #' @param variable a named numeric vector of length 2, containing min and max values
 #' of a single varying parameter
@@ -29,7 +29,7 @@ root_var <- function(pars,
 
     pars[variable_name] <- variable
     variable <- unlist(variable) # uniroot takes vector as arguments
-    R0 <- r0(pars) # R0 for min and max of variable (rest of pars are recycled)
+    R0 <- get_R0(pars) # R0 for min and max of variable (rest of pars are recycled)
 
     #Only get root if R0 increases through 1
     # otherwise return root = NA
