@@ -47,7 +47,7 @@ ui <- shiny::fluidPage(
     shiny::sidebarLayout(
         shiny::sidebarPanel(
             shiny::selectInput("season", "Model type",
-                               c("Regular", "Seasonal"))
+                               c("Regular", "Seasonal")),
             shiny::selectInput("parset", "Set of parameters",
                       c("Oncaea sp.-Blastodinium mangini" = "onc",
                         "C. finmarchicus-B. hyalinum" = "cal")),
