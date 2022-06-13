@@ -1,4 +1,6 @@
-
+#' Utility for varying model parameters
+#'
+#' @inheritParams ss_varpar
 #' @export
 new_par <- function(var, ref) {
     non.var <- !(names(ref) %in% names(var))
