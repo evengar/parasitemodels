@@ -10,7 +10,8 @@ onc_par <- c(
     a = 0.0398970399,
     m = 0.3372620127,
     L = 360,
-    f = 0.5
+    f = 0.5,
+    Ks = 0.99
 )
 
 calanus_par <- list(
@@ -45,6 +46,8 @@ ui <- shiny::fluidPage(
     # Sidebar with a slider input
     shiny::sidebarLayout(
         shiny::sidebarPanel(
+            shiny::selectInput("season", "Model type",
+                               c("Regular", "Seasonal"))
             shiny::selectInput("parset", "Set of parameters",
                       c("Oncaea sp.-Blastodinium mangini" = "onc",
                         "C. finmarchicus-B. hyalinum" = "cal")),
