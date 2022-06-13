@@ -1,5 +1,4 @@
 mod_name <- "Anderson & May model B+F+G"
-mod <- AM81_BFG
 
 onc_par <- c(
     r = 0.1553797192,
@@ -90,6 +89,12 @@ server <- function(input, output) {
                cal = return(calanus_par))
     })
 
+    mod <- reactive({
+        switch(input$season,
+               Regular = return(AM81_BFG),
+               Seasonal = return(AM81_BFG_seasonal))
+    })
+
     # set up input sliders
     # scaling slider ranges to input size
     output$parsliders <- shiny::renderUI({
@@ -139,7 +144,7 @@ server <- function(input, output) {
 
     # create visualization
     output$modplot <- shiny::renderPlot({
-        modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod)
+        modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod())
         modl <- as.data.frame(modl)
         par(mfrow = c(2, 2))
 
