@@ -70,13 +70,13 @@ root_multi <- function(pars,
         )
         results[[i]][iter_name] <- grid[i,]
     }
-    #return(results)
-    results_df <- purrr::map_dfr(
+
+    results_mat <- do.call(rbind, lapply(
         results, function(x){
             vec <- NULL
             vec[iter_name] <- x[iter_name]
             vec[variable_name] <- x$root
             return(vec)
-        })
-    return(as.data.frame(results_df))
+        }))
+    return(as.data.frame(results_mat))
 }
