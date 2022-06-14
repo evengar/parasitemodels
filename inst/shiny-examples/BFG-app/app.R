@@ -35,6 +35,28 @@ init <- c(
     W = 0.1
 )
 
+parsetUI <- function(id){
+    ns <- shiny::NS(id)
+    shiny::tagList(
+        shiny::selectInput(ns("parset"), "Set of parameters",
+                           c("Oncaea sp.-Blastodinium mangini" = "onc",
+                             "C. finmarchicus-B. hyalinum" = "cal"))
+    )
+}
+
+parsetServer <- function(id){
+    moduleServer(
+        id,
+        function(input, output, session){
+            shiny::reactive({
+                switch(input$parset,
+                       onc = return(onc_par),
+                       cal = return(calanus_par))
+            })
+        }
+    )
+}
+
 
 
 ui <- shiny::fluidPage(
@@ -45,9 +67,7 @@ ui <- shiny::fluidPage(
     # Sidebar with a slider input
     shiny::sidebarLayout(
         shiny::sidebarPanel(
-            shiny::selectInput("parset", "Set of parameters",
-                      c("Oncaea sp.-Blastodinium mangini" = "onc",
-                        "C. finmarchicus-B. hyalinum" = "cal")),
+            parsetUI("parset"),
             shiny::titlePanel("Parameters"),
             shiny::uiOutput("parsliders"),
            width = 3, style = "overflow-y:scroll; max-height: 600px; position:relative;",
@@ -81,11 +101,7 @@ ui <- shiny::fluidPage(
 server <- function(input, output) {
 
     # react to input parameter set
-    parset <- shiny::reactive({
-        switch(input$parset,
-               onc = return(onc_par),
-               cal = return(calanus_par))
-    })
+    parset <- parsetServer("parset")
 
     # set up input sliders
     # scaling slider ranges to input size
