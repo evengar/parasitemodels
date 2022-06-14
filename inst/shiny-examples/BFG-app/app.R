@@ -131,7 +131,7 @@ server <- function(input, output) {
 
     # get current steady state
     steady <- shiny::reactive({
-        ss_AM81_BFG(parameters())
+        paRmodels::ss_AM81_BFG(parameters())
     })
 
     # create visualization
