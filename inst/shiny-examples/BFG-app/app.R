@@ -1,5 +1,5 @@
 mod_name <- "Anderson & May model B+F+G"
-mod <- AM81_BFG
+mod <- paRmodels::AM81_BFG
 
 onc_par <- c(
     r = 0.1553797192,
