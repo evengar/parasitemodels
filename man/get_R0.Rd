@@ -29,6 +29,6 @@ onc_par <- c(
     f = 1
     )
 
-r0(onc_par)
+get_R0(onc_par)
 
 }
