@@ -8,7 +8,7 @@
 run_model <- function() {
     appDir <- system.file("shiny-examples", "BFG-app", package = "paRmodels")
     if (appDir == "") {
-        stop("Could not find example directory. Try re-installing `mypackage`.", call. = FALSE)
+        stop("Could not find example directory. Try re-installing `paRmodels`.", call. = FALSE)
     }
 
     shiny::runApp(appDir, display.mode = "normal")
