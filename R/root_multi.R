@@ -34,7 +34,7 @@ root_var <- function(pars,
     #Only get root if R0 increases through 1
     # otherwise return root = NA
     if(R0[1] < 1 & R0[2] > 1){
-        result <- uniroot(get_R0_root,
+        result <- stats::uniroot(get_R0_root,
                           interval = variable,
                           pars = pars,
                           variable_name = variable_name)
@@ -71,7 +71,7 @@ root_multi <- function(pars,
         results[[i]][iter_name] <- grid[i,]
     }
     #return(results)
-    results_df <- map_dfr(
+    results_df <- purrr::map_dfr(
         results, function(x){
             vec <- NULL
             vec[iter_name] <- x[iter_name]
