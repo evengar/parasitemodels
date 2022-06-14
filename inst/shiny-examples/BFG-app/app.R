@@ -57,6 +57,35 @@ parsetServer <- function(id){
     )
 }
 
+initSliderUI <- function(id, values){
+    ns <- shiny::NS(id)
+
+    lapply(seq_along(values), function(x, y, i){
+        shiny::sliderInput(
+            ns(paste0(y[[i]])),
+            paste0(y[[i]]),
+            min = 0,
+            max = 5,
+            value = x[[i]],
+            step = 0.1)
+    },
+    x = init, y = names(init))
+}
+
+initSliderServer <- function(id, init){
+    moduleServer(
+        id,
+        function(input, output, session){
+            shiny::reactive({
+                current <- sapply(seq_along(names(init)), function(i){
+                    input[[names(init)[[i]]]]
+                })
+                setNames(current, names(init))
+            })
+        }
+    )
+
+}
 
 
 ui <- shiny::fluidPage(
@@ -73,15 +102,8 @@ ui <- shiny::fluidPage(
            width = 3, style = "overflow-y:scroll; max-height: 600px; position:relative;",
 
            shiny::titlePanel("Initial state"),
-          lapply(seq_along(init), function(x, y, i){
-              shiny::sliderInput(paste0(y[[i]]),
-                          paste0(y[[i]]),
-                          min = 0,
-                          max = 5,
-                          value = x[[i]],
-                          step = 0.1)
-          },
-            x = init, y = names(init))),
+           initSliderUI("init", init)
+           ),
 
         shiny:: mainPanel(
             plotOutput("modplot")
@@ -131,12 +153,7 @@ server <- function(input, output) {
 
 
     # get current initial values
-    initial <- shiny::reactive({
-        current <- sapply(seq_along(names(init)), function(i){
-            input[[names(init)[[i]]]]
-        })
-        setNames(current, names(init))
-    })
+    initial <- initSliderServer("init", init)
 
 
     # setup button for toggling ss visualization
