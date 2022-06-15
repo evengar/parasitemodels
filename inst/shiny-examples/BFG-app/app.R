@@ -87,6 +87,47 @@ initSliderServer <- function(id, init){
 
 }
 
+parsliderUI <- function(id){
+    ns <- NS(id)
+    tagList(
+        shiny::uiOutput(ns("parsliders"))
+    )
+}
+
+parsliderServer <- function(id, params){
+    moduleServer(
+        id,
+        function(input, output, session){
+            ns <- session$ns
+            output$parsliders <- shiny::renderUI({
+                lapply(seq_along(params()), function(x, y, i){
+                    shiny::sliderInput(ns(paste0(y[[i]])),
+                                       paste0(y[[i]]),
+                                       min = 0,
+                                       max = ifelse(x[[i]]<0.01 & x[[i]] > 0, 0.01,
+                                                    ifelse(x[[i]] <= 1, 1,
+                                                           x[[i]]*2)),
+                                       value = x[[i]]
+                    )
+                }, x = params(), y = names(params()))
+            })
+        }
+    )
+}
+
+getParServer <- function(id, params){
+    moduleServer(
+        id,
+        function(input, output, session){
+            shiny::reactive({
+                current <- sapply(seq_along(names(params())), function(i){
+                    input[[names(params())[[i]]]]
+                })
+                setNames(current, param_names)
+            })
+        }
+    )
+}
 
 ui <- shiny::fluidPage(
 
@@ -98,7 +139,7 @@ ui <- shiny::fluidPage(
         shiny::sidebarPanel(
             parsetUI("parset"),
             shiny::titlePanel("Parameters"),
-            shiny::uiOutput("parsliders"),
+            parsliderUI("parslider"),
            width = 3, style = "overflow-y:scroll; max-height: 600px; position:relative;",
 
            shiny::titlePanel("Initial state"),
@@ -127,28 +168,11 @@ server <- function(input, output) {
 
     # set up input sliders
     # scaling slider ranges to input size
-    output$parsliders <- shiny::renderUI({
-        params <- parset()
-        lapply(seq_along(params), function(x, y, i){
-            shiny::sliderInput(paste0(y[[i]]),
-                               paste0(y[[i]]),
-                               min = 0,
-                               max = ifelse(x[[i]]<0.01 & x[[i]] > 0, 0.01,
-                                            ifelse(x[[i]] <= 1, 1,
-                                                   x[[i]]*2)),
-                               value = x[[i]]
-            )
-        }, x = params, y = names(params))
-    })
+    parsliderServer("parslider", parset)
 
 
     # get current parameters
-    parameters <- shiny::reactive({
-        current <- sapply(seq_along(param_names), function(i){
-            input[[param_names[[i]]]]
-        })
-        setNames(current, param_names)
-    })
+    parameters <- getParServer("parslider", parset)
 
 
 
