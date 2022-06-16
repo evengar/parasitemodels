@@ -25,8 +25,6 @@ calanus_par <- list(
   f = 1
 )
 
-param_names <- names(onc_par)
-
 times <- 1:999
 
 init <- c(
@@ -123,7 +121,7 @@ getParServer <- function(id, params){
                 current <- sapply(seq_along(names(params())), function(i){
                     input[[names(params())[[i]]]]
                 })
-                setNames(current, param_names)
+                setNames(current, names(params()))
             })
         }
     )
