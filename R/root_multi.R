@@ -76,7 +76,7 @@ root_multi <- function(pars,
             vec <- NULL
             vec[iter_name] <- x[iter_name]
             vec[variable_name] <- x$root
-            return(vec)
+            return(unlist(vec))
         }))
     return(as.data.frame(results_mat))
 }
