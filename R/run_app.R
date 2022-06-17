@@ -1,4 +1,4 @@
-run_app <- function(mod, pars, init, times = 1:999, mod_name = quote(mod), ...){
+run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitute(mod)), ...){
 
 
     ui <- fluidPage(
