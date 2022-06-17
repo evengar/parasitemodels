@@ -22,10 +22,10 @@ parsetServer <- function(id, inputpars){
     )
 }
 
-initSliderUI <- function(id, values){
+initSliderUI <- function(id, init){
     ns <- NS(id)
 
-    lapply(seq_along(values), function(x, y, i){
+    lapply(seq_along(init), function(x, y, i){
         sliderInput(
             ns(paste0(y[[i]])),
             paste0(y[[i]]),
