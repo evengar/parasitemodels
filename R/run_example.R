@@ -6,10 +6,11 @@
 #' @export
 #'
 run_example <- function() {
-    appDir <- system.file("shiny-examples", "BFG-app", package = "paRmodels")
-    if (appDir == "") {
-           stop("Could not find example directory. Try re-installing `paRmodels`.", call. = FALSE)
-    }
+    init <- c(
+        H = 1,
+        Y = 0,
+        W = 0.1
+    )
 
-    shiny::runApp(appDir, display.mode = "normal")
+    run_app(AM81_BFG, oncaea_par, init)
 }
