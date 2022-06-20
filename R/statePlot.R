@@ -1,9 +1,13 @@
 statePlotUI <- function(id, varnames){
     ns <- NS(id)
     tagList(
-        selectInput(ns("xvar"), "X-axis variable", varnames),
-        selectInput(ns("yvar"), "Y-axis variable", varnames, selected = varnames[2]),
-        plotOutput(ns("stateplot"))
+        sidebarPanel(
+            selectInput(ns("xvar"), "X-axis variable", varnames),
+            selectInput(ns("yvar"), "Y-axis variable", varnames, selected = varnames[2])
+        ),
+        mainPanel(
+            plotOutput(ns("stateplot"))
+        )
     )
 }
 
