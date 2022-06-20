@@ -1,22 +1,21 @@
-statePlotUI <- function(id, init){
+statePlotUI <- function(id, varnames){
     ns <- NS(id)
-    vars <- c(names(init), "prevalence")
     tagList(
-        selectInput(ns("xvar"), "X-axis variable", vars),
-        selectInput(ns("yvar"), "Y-axis variable", vars, selected = "Y"),
+        selectInput(ns("xvar"), "X-axis variable", varnames),
+        selectInput(ns("yvar"), "Y-axis variable", varnames, selected = varnames[2]),
         plotOutput(ns("stateplot"))
     )
 }
 
-statePlotServer <- function(id, modl){
-
+statePlotServer <- function(id, reactive_df){
+    stopifnot(is.reactive(reactive_df))
     moduleServer(
         id,
         function(input, output, session){
 
             output$stateplot <- renderPlot({
-                x <- modl()[[input$xvar]]
-                y <- modl()[[input$yvar]]
+                x <- reactive_df()[[input$xvar]]
+                y <- reactive_df()[[input$yvar]]
                 plot(x, y, type = "l",
                      xlab = input$xvar,
                      ylab = input$yvar)
