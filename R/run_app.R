@@ -17,9 +17,16 @@ run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitut
                 titlePanel("Initial state"),
                 initSliderUI("init", init)
             ),
-
             mainPanel(
-                plotOutput("modplot")
+                tabsetPanel(
+                    tabPanel("Time series",
+                             plotOutput("modplot")
+                    ),
+                    tabPanel("Two-state plots"
+
+                    )
+            )
+
             )
         ),
         sliderInput("xlim", "xlim",
@@ -63,33 +70,39 @@ run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitut
             paRmodels::ss_AM81_BFG(parameters())
         })
 
-        # create visualization
-        output$modplot <- renderPlot({
+        modl <- reactive({
             modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod)
             modl <- as.data.frame(modl)
+            modl$prevalence <- modl$Y / modl$H
+            modl
+        })
+
+        # create visualization
+        output$modplot <- renderPlot({
+
             par(mfrow = c(2, 2))
 
             ss <- steady()
 
-            plot(H ~ time, data = modl, xlim = input$xlim, type = "l",
+            plot(H ~ time, data = modl(), xlim = input$xlim, type = "l",
                  ylab = "Total host population H (ind/L)",
                  xlab = "Time (days)")
             if(plotsteady()){
                 abline(h = ss[1], col = 2, lty = 2)
             }
-            plot(Y ~ time, data = modl, xlim = input$xlim, type = "l",
+            plot(Y ~ time, data = modl(), xlim = input$xlim, type = "l",
                  ylab = "Infected hosts Y (ind/L)",
                  xlab = "Time (days)")
             if(plotsteady()){
                 abline(h = ss[2], col = 2, lty = 2)
             }
-            plot(W ~ time, data = modl, xlim = input$xlim, type = "l",
+            plot(W ~ time, data = modl(), xlim = input$xlim, type = "l",
                  ylab = "Free-living parasites W (ind/L)",
                  xlab = "Time (days)")
             if(plotsteady()){
                 abline(h = ss[3], col = 2, lty = 2)
             }
-            plot(modl[, "time"], modl[,"Y"]/modl[,"H"],
+            plot(prevalence ~ time, data = modl(),
                  xlim = input$xlim,
                  type = "l",
                  xlab = "time",
