@@ -1,5 +1,7 @@
 mod_name <- "Anderson & May model B+F+G"
 
+mod <- paRmodels::AM81_BFG
+
 onc_par <- c(
     r = 0.1553797192,
     b = 0.09523809524,
@@ -25,8 +27,6 @@ calanus_par <- list(
   f = 1
 )
 
-param_names <- names(onc_par)
-
 times <- 1:999
 
 init <- c(
@@ -35,59 +35,137 @@ init <- c(
     W = 0.1
 )
 
+parsetUI <- function(id){
+    ns <- NS(id)
+    tagList(
+        selectInput(ns("parset"), "Set of parameters",
+                           c("Oncaea sp.-Blastodinium mangini" = "onc",
+                             "C. finmarchicus-B. hyalinum" = "cal"))
+    )
+}
 
+parsetServer <- function(id){
+    moduleServer(
+        id,
+        function(input, output, session){
+            reactive({
+                switch(input$parset,
+                       onc = return(onc_par),
+                       cal = return(calanus_par))
+            })
+        }
+    )
+}
 
-ui <- shiny::fluidPage(
+initSliderUI <- function(id, values){
+    ns <- NS(id)
+
+    lapply(seq_along(values), function(x, y, i){
+        sliderInput(
+            ns(paste0(y[[i]])),
+            paste0(y[[i]]),
+            min = 0,
+            max = 5,
+            value = x[[i]],
+            step = 0.1)
+    },
+    x = init, y = names(init))
+}
+
+initSliderServer <- function(id, init){
+    moduleServer(
+        id,
+        function(input, output, session){
+            reactive({
+                current <- sapply(seq_along(names(init)), function(i){
+                    input[[names(init)[[i]]]]
+                })
+                setNames(current, names(init))
+            })
+        }
+    )
+
+}
+
+parsliderUI <- function(id){
+    ns <- NS(id)
+    tagList(
+        uiOutput(ns("parsliders"))
+    )
+}
+
+parsliderServer <- function(id, params){
+    moduleServer(
+        id,
+        function(input, output, session){
+            ns <- session$ns
+            output$parsliders <- renderUI({
+                lapply(seq_along(params()), function(x, y, i){
+                    sliderInput(ns(paste0(y[[i]])),
+                                       paste0(y[[i]]),
+                                       min = 0,
+                                       max = ifelse(x[[i]]<0.01 & x[[i]] > 0, 0.01,
+                                                    ifelse(x[[i]] <= 1, 1,
+                                                           x[[i]]*2)),
+                                       value = x[[i]]
+                    )
+                }, x = params(), y = names(params()))
+            })
+        }
+    )
+}
+
+getParServer <- function(id, params){
+    moduleServer(
+        id,
+        function(input, output, session){
+            reactive({
+                current <- sapply(seq_along(names(params())), function(i){
+                    input[[names(params())[[i]]]]
+                })
+                setNames(current, names(params()))
+            })
+        }
+    )
+}
+
+ui <- fluidPage(
 
     # Application title
-    shiny::titlePanel(mod_name),
+    titlePanel(mod_name),
 
     # Sidebar with a slider input
-    shiny::sidebarLayout(
-        shiny::sidebarPanel(
-            shiny::selectInput("season", "Model type",
-                               c("Regular", "Seasonal")),
-            shiny::selectInput("parset", "Set of parameters",
-                      c("Oncaea sp.-Blastodinium mangini" = "onc",
-                        "C. finmarchicus-B. hyalinum" = "cal")),
-            shiny::titlePanel("Parameters"),
-            shiny::uiOutput("parsliders"),
+
+    sidebarLayout(
+        sidebarPanel(
+            parsetUI("parset"),
+            titlePanel("Parameters"),
+            parsliderUI("parslider"),
            width = 3, style = "overflow-y:scroll; max-height: 600px; position:relative;",
 
-           shiny::titlePanel("Initial state"),
-          lapply(seq_along(init), function(x, y, i){
-              shiny::sliderInput(paste0(y[[i]]),
-                          paste0(y[[i]]),
-                          min = 0,
-                          max = 5,
-                          value = x[[i]],
-                          step = 0.1)
-          },
-            x = init, y = names(init))),
+           titlePanel("Initial state"),
+           initSliderUI("init", init)
+           ),
 
-        shiny:: mainPanel(
+         mainPanel(
             plotOutput("modplot")
         )
     ),
-    shiny::sliderInput("xlim", "xlim",
+    sliderInput("xlim", "xlim",
                 min = 0,
                 max = length(times),
                 value = c(0,length(times)),
                 step = 1),
-    shiny::checkboxInput("toggle", "Show analytical steady state"),
-    shiny::textOutput("parms"),
-    shiny::textOutput("init")
+    checkboxInput("toggle", "Show analytical steady state"),
+    textOutput("parms"),
+    textOutput("init")
 )
 
 
 server <- function(input, output) {
 
     # react to input parameter set
-    parset <- shiny::reactive({
-        switch(input$parset,
-               onc = return(onc_par),
-               cal = return(calanus_par))
-    })
+    parset <- parsetServer("parset")
 
     mod <- reactive({
         switch(input$season,
@@ -97,54 +175,33 @@ server <- function(input, output) {
 
     # set up input sliders
     # scaling slider ranges to input size
-    output$parsliders <- shiny::renderUI({
-        params <- parset()
-        lapply(seq_along(params), function(x, y, i){
-            shiny::sliderInput(paste0(y[[i]]),
-                               paste0(y[[i]]),
-                               min = 0,
-                               max = ifelse(x[[i]]<0.01 & x[[i]] > 0, 0.01,
-                                            ifelse(x[[i]] <= 1, 1,
-                                                   x[[i]]*2)),
-                               value = x[[i]]
-            )
-        }, x = params, y = names(params))
-    })
+    parsliderServer("parslider", parset)
 
 
     # get current parameters
-    parameters <- shiny::reactive({
-        current <- sapply(seq_along(param_names), function(i){
-            input[[param_names[[i]]]]
-        })
-        setNames(current, param_names)
-    })
+    parameters <- getParServer("parslider", parset)
 
 
 
     # get current initial values
-    initial <- shiny::reactive({
-        current <- sapply(seq_along(names(init)), function(i){
-            input[[names(init)[[i]]]]
-        })
-        setNames(current, names(init))
-    })
+    initial <- initSliderServer("init", init)
 
 
     # setup button for toggling ss visualization
-    plotsteady <- shiny::reactiveVal(TRUE)
-    shiny::observeEvent(input$toggle, {
+    plotsteady <- reactiveVal(TRUE)
+    observeEvent(input$toggle, {
         plotsteady(!plotsteady())
     })
 
     # get current steady state
-    steady <- shiny::reactive({
-        ss_AM81_BFG(parameters())
+    steady <- reactive({
+        paRmodels::ss_AM81_BFG(parameters())
     })
 
     # create visualization
-    output$modplot <- shiny::renderPlot({
-        modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod())
+
+    output$modplot <- renderPlot({
+        modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod)
         modl <- as.data.frame(modl)
         par(mfrow = c(2, 2))
 
@@ -181,7 +238,7 @@ server <- function(input, output) {
 
 
 
-    output$parms <- shiny::renderText({
+    output$parms <- renderText({
         params <- parameters()
         parmassign <- paste0(names(params), " = ", params)
         paste0("parms <- c(", paste0(parmassign, collapse = ", "), ")")
@@ -189,7 +246,7 @@ server <- function(input, output) {
 
 
 
-    output$init <- shiny::renderText({
+    output$init <- renderText({
         inits <- initial()
         initassign <- paste0(names(inits), " = ", inits)
         paste0("init <- c(", paste0(initassign, collapse = ", "), ")")
@@ -199,4 +256,4 @@ server <- function(input, output) {
 }
 
 # Run the application
-shiny::shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server)

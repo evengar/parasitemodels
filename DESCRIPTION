@@ -12,7 +12,8 @@ RoxygenNote: 7.1.2
 Imports: 
     deSolve,
     rootSolve,
-    shiny
+    shiny,
+    stats
 Depends: 
     R (>= 2.10)
 LazyData: true
