@@ -1,4 +1,5 @@
 mod_name <- "Anderson & May model B+F+G"
+
 mod <- paRmodels::AM81_BFG
 
 onc_par <- c(
@@ -10,7 +11,8 @@ onc_par <- c(
     a = 0.0398970399,
     m = 0.3372620127,
     L = 360,
-    f = 0.5
+    f = 0.5,
+    Ks = 0.99
 )
 
 calanus_par <- list(
@@ -133,6 +135,7 @@ ui <- fluidPage(
     titlePanel(mod_name),
 
     # Sidebar with a slider input
+
     sidebarLayout(
         sidebarPanel(
             parsetUI("parset"),
@@ -164,6 +167,12 @@ server <- function(input, output) {
     # react to input parameter set
     parset <- parsetServer("parset")
 
+    mod <- reactive({
+        switch(input$season,
+               Regular = return(AM81_BFG),
+               Seasonal = return(AM81_BFG_seasonal))
+    })
+
     # set up input sliders
     # scaling slider ranges to input size
     parsliderServer("parslider", parset)
@@ -190,6 +199,7 @@ server <- function(input, output) {
     })
 
     # create visualization
+
     output$modplot <- renderPlot({
         modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod)
         modl <- as.data.frame(modl)
