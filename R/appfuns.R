@@ -1,3 +1,33 @@
+modelUI <- function(id){
+    ns <- NS(id)
+    tagList(
+        selectInput(ns("modelt"), "Model type",
+                    c("Regular" = "reg",
+                      "Seasonal" = "seas"))
+    )
+}
+
+modelServer <- function(id, initial, parameters, mod){
+
+    moduleServer(
+        id,
+        function(input, output, session){
+            reactive({
+                if(input$modelt == "seas"){
+                    mod <- AM81_BFG_seasonal
+                }
+                #browser()
+                modl <- deSolve::ode(y = initial(), times = 1:999, parms = parameters(), func = mod)
+
+                modl <- as.data.frame(modl)
+                modl$prevalence <- modl$Y / modl$H
+                modl
+                #browser()
+            })
+        }
+    )
+}
+
 parsetUI <- function(id){
     ns <- NS(id)
     tagList(

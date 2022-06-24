@@ -9,6 +9,7 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
         # Sidebar with a slider input
         sidebarLayout(
             sidebarPanel(
+                modelUI("modtype"),
                 parsetUI("parset"),
                 titlePanel("Parameters"),
                 parsliderUI("parslider"),
@@ -31,9 +32,9 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
             )
         ),
         sliderInput("time", "Number of time steps",
-                    min = 1e3,
-                    max = 1e4,
-                    value = 1e3,
+                    min = 1000,
+                    max = 10000,
+                    value = 1000,
                     step = 100),
         checkboxInput("toggle", "Show analytical steady state"),
         textOutput("parms"),
@@ -71,12 +72,7 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
             paRmodels::ss_AM81_BFG(parameters())
         })
 
-        modl <- reactive({
-            modl <- deSolve::ode(y = initial(), times = 1:input$time, parms = parameters(), func = mod)
-            modl <- as.data.frame(modl)
-            modl$prevalence <- modl$Y / modl$H
-            modl
-        })
+        modl <- modelServer("modtype", initial, parameters, mod)
 
         # create visualization
         output$modplot <- renderPlot({
