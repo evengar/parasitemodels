@@ -22,7 +22,7 @@ run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitut
                     tabPanel("Time series",
                              plotOutput("modplot")
                     ),
-                    tabPanel("Two-state plots",
+                    tabPanel("Phase plane",
                              statePlotUI("stateplot", c(names(init), "prevalence"))
 
                     )
