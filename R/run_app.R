@@ -1,4 +1,4 @@
-run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitute(mod)), ...){
+run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
 
 
     ui <- fluidPage(
@@ -30,11 +30,11 @@ run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitut
 
             )
         ),
-        sliderInput("xlim", "xlim",
-                    min = 0,
-                    max = length(times),
-                    value = c(0,length(times)),
-                    step = 1),
+        sliderInput("time", "Number of time steps",
+                    min = 1e3,
+                    max = 1e4,
+                    value = 1e3,
+                    step = 100),
         checkboxInput("toggle", "Show analytical steady state"),
         textOutput("parms"),
         textOutput("init")
@@ -72,7 +72,7 @@ run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitut
         })
 
         modl <- reactive({
-            modl <- deSolve::ode(y = initial(), times = times, parms = parameters(), func = mod)
+            modl <- deSolve::ode(y = initial(), times = 1:input$time, parms = parameters(), func = mod)
             modl <- as.data.frame(modl)
             modl$prevalence <- modl$Y / modl$H
             modl
@@ -85,26 +85,25 @@ run_app <- function(mod, pars, init, times = 1:999, mod_name = deparse(substitut
 
             ss <- steady()
 
-            plot(H ~ time, data = modl(), xlim = input$xlim, type = "l",
+            plot(H ~ time, data = modl(), type = "l",
                  ylab = "Total host population H (ind/L)",
                  xlab = "Time (days)")
             if(plotsteady()){
                 abline(h = ss[1], col = 2, lty = 2)
             }
-            plot(Y ~ time, data = modl(), xlim = input$xlim, type = "l",
+            plot(Y ~ time, data = modl(), type = "l",
                  ylab = "Infected hosts Y (ind/L)",
                  xlab = "Time (days)")
             if(plotsteady()){
                 abline(h = ss[2], col = 2, lty = 2)
             }
-            plot(W ~ time, data = modl(), xlim = input$xlim, type = "l",
+            plot(W ~ time, data = modl(),  type = "l",
                  ylab = "Free-living parasites W (ind/L)",
                  xlab = "Time (days)")
             if(plotsteady()){
                 abline(h = ss[3], col = 2, lty = 2)
             }
             plot(prevalence ~ time, data = modl(),
-                 xlim = input$xlim,
                  type = "l",
                  xlab = "time",
                  ylab = "Parasite prevalence Y/H")
