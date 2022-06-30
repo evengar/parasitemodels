@@ -43,10 +43,13 @@ parsetServer <- function(id, inputpars){
         id,
         function(input, output, session){
             reactive({
-                switch(input$parset,
-                       inp = return(inputpars),
-                       onc = return(oncaea_par),
-                       cal = return(calanus_par))
+                #browser()
+                pars <- switch(input$parset,
+                       inp = inputpars,
+                       onc = oncaea_par,
+                       cal = calanus_par)
+                if(input$modelt == "seas") pars <- c(pars, Ks = 0.5)
+                return(pars)
             })
         }
     )

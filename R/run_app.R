@@ -9,7 +9,7 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
         # Sidebar with a slider input
         sidebarLayout(
             sidebarPanel(
-                modelUI("modtype"),
+                modelUI("parset"),
                 parsetUI("parset"),
                 titlePanel("Parameters"),
                 parsliderUI("parslider"),
@@ -72,7 +72,7 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
             paRmodels::ss_AM81_BFG(parameters())
         })
 
-        modl <- modelServer("modtype", initial, parameters, mod)
+        modl <- modelServer("parset", initial, parameters, mod)
 
         # create visualization
         output$modplot <- renderPlot({
