@@ -7,7 +7,7 @@ modelUI <- function(id){
     )
 }
 
-modelServer <- function(id, initial, parameters, mod){
+modelServer <- function(id, initial, parameters, mod, timesteps){
 
     moduleServer(
         id,
@@ -16,8 +16,9 @@ modelServer <- function(id, initial, parameters, mod){
                 if(input$modelt == "seas"){
                     mod <- AM81_BFG_seasonal
                 }
+
                 #browser()
-                modl <- deSolve::ode(y = initial(), times = 1:999, parms = parameters(), func = mod)
+                modl <- deSolve::ode(y = initial(), times = 1:timesteps(), parms = parameters(), func = mod)
 
                 modl <- as.data.frame(modl)
                 modl$prevalence <- modl$Y / modl$H

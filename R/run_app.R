@@ -60,6 +60,10 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
         # get current initial values
         initial <- initSliderServer("init", init)
 
+        timesteps <- reactive({
+            input$time
+        })
+
 
         # setup button for toggling ss visualization
         plotsteady <- reactiveVal(TRUE)
@@ -72,7 +76,7 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
             paRmodels::ss_AM81_BFG(parameters())
         })
 
-        modl <- modelServer("parset", initial, parameters, mod)
+        modl <- modelServer("parset", initial, parameters, mod, timesteps)
 
         # create visualization
         output$modplot <- renderPlot({
