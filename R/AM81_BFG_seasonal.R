@@ -10,8 +10,14 @@ AM81_BFG_seasonal <- function(t, x, parms){
 
         # K depends on day of year
         # bottom on first day, peak on day 365/2
+
+        # when Ks is 0, midline = K, amplitude = 0
+        # when Ks is 1, midline = K / 2, amplitude = K / 2
+        mid <- K - (Ks * K/2)
+        amp <- Ks * K / 2
+
         # add a small magic number to prevent Kt from ever reaching 0
-        Kt = K / 2 * (1 + Ks * -cos(2 * pi * t/365)) + 1e-5
+        Kt <- mid + amp * -cos(2 * pi * t/365) + 1e-5
 
         dY = v*W*(H - Y) - (a + b + g)*Y
         dW = L*(a + b + g)*Y - (m + v*H)*W
