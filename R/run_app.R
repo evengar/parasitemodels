@@ -1,3 +1,4 @@
+#' @export
 run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
 
 
