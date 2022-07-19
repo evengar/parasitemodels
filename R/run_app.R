@@ -82,36 +82,34 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
         # create visualization
         output$modplot <- renderPlot({
 
-            par(mfrow = c(2, 2))
+
 
             if(plotsteady())
                 ss <- steady()
+            plotdata <- modl()
 
-            plot(H ~ time, data = modl(), type = "l",
-                 ylab = "Total host population H (ind/L)",
-                 xlab = "Time (days)")
-            if(plotsteady()){
-                abline(h = ss[1], col = 2, lty = 2)
+            # set up plot grid
+
+            nstates <- ncol(plotdata) - 1
+            par(mfrow = c(ceiling(nstates / 2), 2))
+            #browser()
+
+            for (i in 2:ncol(plotdata)){
+                #browser()
+                state <- names(plotdata)[i]
+                plot(plotdata[,"time"], plotdata[,i],
+                     type = "l",
+                     xlab = "Time",
+                     ylab = state)
+
+                if(plotsteady()){
+                    if (state %in% names(ss)){
+                        abline(h = ss[state], col = 2, lty = 2)
+                    }
+                }
             }
-            plot(Y ~ time, data = modl(), type = "l",
-                 ylab = "Infected hosts Y (ind/L)",
-                 xlab = "Time (days)")
-            if(plotsteady()){
-                abline(h = ss[2], col = 2, lty = 2)
-            }
-            plot(W ~ time, data = modl(),  type = "l",
-                 ylab = "Free-living parasites W (ind/L)",
-                 xlab = "Time (days)")
-            if(plotsteady()){
-                abline(h = ss[3], col = 2, lty = 2)
-            }
-            plot(prevalence ~ time, data = modl(),
-                 type = "l",
-                 xlab = "time",
-                 ylab = "Parasite prevalence Y/H")
-            if(plotsteady()){
-                abline(h = ss[2]/ss[1], col = 2, lty = 2)
-            }
+
+
 
         }, height = 600)
 
