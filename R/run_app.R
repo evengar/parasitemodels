@@ -84,7 +84,8 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
 
             par(mfrow = c(2, 2))
 
-            ss <- steady()
+            if(plotsteady())
+                ss <- steady()
 
             plot(H ~ time, data = modl(), type = "l",
                  ylab = "Total host population H (ind/L)",
