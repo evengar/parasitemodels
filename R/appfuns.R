@@ -103,7 +103,7 @@ parsliderServer <- function(id, params){
                     sliderInput(ns(paste0(y[[i]])),
                                 paste0(y[[i]]),
                                 min = 0,
-                                max = ifelse(x[[i]]<0.01 & x[[i]] > 0, 0.01,
+                                max = ifelse(x[[i]]<0.01 & x[[i]] > 0, x[[i]]*10,
                                              ifelse(x[[i]] <= 1, 1,
                                                     x[[i]]*2)),
                                 value = x[[i]]
