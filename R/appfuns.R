@@ -7,14 +7,15 @@ modelUI <- function(id){
     )
 }
 
-modelServer <- function(id, initial, parameters, mod, timesteps){
+modelServer <- function(id, initial, parameters, mod, timesteps, mod_name){
 
     moduleServer(
         id,
         function(input, output, session){
             reactive({
                 if(input$modelt == "seas"){
-                    mod <- AM81_BFG_seasonal
+                    mod_seas <- paste0(mod_name, "_seasonal")
+                    mod <- eval(parse(text = mod_seas))
                 }
 
                 #browser()

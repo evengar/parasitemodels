@@ -1,6 +1,9 @@
 #' @export
-run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
+run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitute(mod)), ...){
 
+    if(is.null(mod_name)){
+        mod_name <- mod_str
+    }
 
     ui <- fluidPage(
 
@@ -77,7 +80,7 @@ run_app <- function(mod, pars, init, mod_name = deparse(substitute(mod)), ...){
             paRmodels::ss_AM81_BFG(parameters())
         })
 
-        modl <- modelServer("parset", initial, parameters, mod, timesteps)
+        modl <- modelServer("parset", initial, parameters, mod, timesteps, mod_str)
 
         # create visualization
         output$modplot <- renderPlot({
