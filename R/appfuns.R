@@ -50,7 +50,7 @@ parsetServer <- function(id, inputpars){
                        inp = inputpars,
                        onc = oncaea_par,
                        cal = calanus_par)
-                if(input$modelt == "seas") pars <- c(pars, Ks = 0.5)
+                if(input$modelt == "seas" & is.na(pars["Ks"])) pars <- c(pars, Ks = 0.5)
                 return(pars)
             })
         }
