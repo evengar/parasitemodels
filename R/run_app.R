@@ -7,6 +7,14 @@ run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitu
 
     ui <- fluidPage(
 
+        tags$head(tags$style(HTML("
+                               body {
+                                  width: 100% !important;
+                                  max-width: 100% !important;
+                               }
+
+                               "))),
+
         # Application title
         titlePanel(mod_name),
 
@@ -138,6 +146,6 @@ run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitu
     }
 
     # Run the application
-    shinyApp(ui = ui, server = server)
+    shinyApp(ui = ui, server = server, options = list(height = 2000))
 
 }
