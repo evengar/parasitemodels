@@ -107,7 +107,8 @@ parsliderServer <- function(id, params){
                                 max = ifelse(x[[i]]<0.01 & x[[i]] > 0, x[[i]]*10,
                                              ifelse(x[[i]] <= 1, 1,
                                                     x[[i]]*2)),
-                                value = x[[i]]
+                                value = x[[i]],
+                                step = if(x[[i]] > 1) 0.1 else NULL
                     )
                 }, x = params(), y = names(params()))
             })
