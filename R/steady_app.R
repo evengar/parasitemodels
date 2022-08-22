@@ -28,8 +28,8 @@ steady_app <- function(pars, mod_name = NULL, mod_str = deparse(substitute(mod))
 
                 titlePanel("Initial state")
             ),
-            mainPanel("Time series",
-                      plotOutput("modplot")
+            mainPanel("Bifurcation point",
+                      statePlotUI("stateplot", names(pars))
 
             )
         )
@@ -46,6 +46,11 @@ steady_app <- function(pars, mod_name = NULL, mod_str = deparse(substitute(mod))
 
         # get current parameters
         parameters <- getParServer("parslider", parset)
+
+        outbreak_data <- outbreakServer("stateplot", parameters)
+
+
+        statePlotServer("stateplot", outbreak_data)
 
     }
 

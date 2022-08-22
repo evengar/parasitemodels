@@ -129,3 +129,13 @@ getParServer <- function(id, params){
         }
     )
 }
+
+outbreakServer <- function(id, params){
+    moduleServer(
+        id,
+        function(input, output, session){
+            reactive({outbreak_conditions(input$xvar, input$yvar, params())})
+
+        }
+    )
+}
