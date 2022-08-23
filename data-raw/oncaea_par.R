@@ -9,7 +9,7 @@ oncaea_par <- c(
     a = 0.0398970399,
     m = 0.3372620127,
     L = 360,
-    f = 1
+    f = 0.5
 )
 
 usethis::use_data(oncaea_par, overwrite = TRUE)
