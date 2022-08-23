@@ -9,10 +9,10 @@ get_R0_root <- function(pars, variable, variable_name){
 #'
 #' @inheritParams get_R0
 #'
-#' @param variable a named numeric vector of length 2, containing min and max values
+#' @param variable a named list with a single numeric vector of length 2, containing min and max values
 #' of a single varying parameter
 #'
-#' @param variable_name name of `variable`
+#' @param variable_name name of `variable`. Defaults to the name of the element in `param`.
 #'
 #' @return a list containing at least `root`, the value of variable where
 #' R0 equals 1

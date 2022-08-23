@@ -9,10 +9,10 @@ root_var(pars, variable, variable_name = names(variable))
 \arguments{
 \item{pars}{A named list or named vector of parameters}
 
-\item{variable}{a named numeric vector of length 2, containing min and max values
+\item{variable}{a named list with a single numeric vector of length 2, containing min and max values
 of a single varying parameter}
 
-\item{variable_name}{name of \code{variable}}
+\item{variable_name}{name of \code{variable}. Defaults to the name of the element in \code{param}.}
 }
 \value{
 a list containing at least \code{root}, the value of variable where

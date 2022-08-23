@@ -15,13 +15,13 @@ root_multi(
 \arguments{
 \item{pars}{A named list or named vector of parameters}
 
-\item{variable}{a named numeric vector of length 2, containing min and max values
+\item{variable}{a named list with a single numeric vector of length 2, containing min and max values
 of a single varying parameter}
 
 \item{grid}{A varying parameter or a grid of different combinations of
 parameters}
 
-\item{variable_name}{name of \code{variable}}
+\item{variable_name}{name of \code{variable}. Defaults to the name of the element in \code{param}.}
 
 \item{iter_name}{the name(s) of the parameters in \code{grid}}
 }
