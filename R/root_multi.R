@@ -33,7 +33,7 @@ root_var <- function(pars,
 
     #Only get root if R0 increases through 1
     # otherwise return root = NA
-    if(R0[1] < 1 & R0[2] > 1){
+    if(sign(R0[1] - 1) != sign(R0[2] - 1)){
         result <- stats::uniroot(get_R0_root,
                           interval = variable,
                           pars = pars,
