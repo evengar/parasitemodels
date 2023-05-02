@@ -1,6 +1,6 @@
 mod_name <- "Anderson & May model B+F+G"
 
-mod <- paRmodels::AM81_BFG
+mod <- parasitemodels::AM81_BFG
 
 onc_par <- c(
     r = 0.1553797192,
@@ -195,7 +195,7 @@ server <- function(input, output) {
 
     # get current steady state
     steady <- reactive({
-        paRmodels::ss_AM81_BFG(parameters())
+        parasitemodels::ss_AM81_BFG(parameters())
     })
 
     # create visualization

@@ -85,7 +85,7 @@ run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitu
 
         # get current steady state
         steady <- reactive({
-            paRmodels::ss_AM81_BFG(parameters())
+            parasitemodels::ss_AM81_BFG(parameters())
         })
 
         modl <- modelServer("parset", initial, parameters, mod, timesteps, mod_str)
