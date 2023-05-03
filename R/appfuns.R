@@ -67,7 +67,7 @@ initSliderUI <- function(id, init){
             min = 0,
             max = max(5, x[[i]] * 2),
             value = x[[i]],
-            step = 0.1)
+            step = min(0.01, x[[i]]))
     },
     x = init, y = names(init))
 }
