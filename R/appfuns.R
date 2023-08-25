@@ -30,26 +30,31 @@ modelServer <- function(id, initial, parameters, mod, timesteps, mod_name){
     )
 }
 
-parsetUI <- function(id){
+parsetUI <- function(id, inputpars, pars_is_list){
     ns <- NS(id)
+    if (pars_is_list){
+        parameter_tags <- setNames(gsub(" ", "", names(parameters)), names(parameters))
+    }else{
+        parameter_tags <- c("User parameters" = "inp")
+    }
     tagList(
         selectInput(ns("parset"), "Set of parameters",
-                    c("User parameters" = "inp",
-                      "Oncaea sp.-Blastodinium mangini" = "onc",
-                      "C. finmarchicus-B. hyalinum" = "cal"))
+                    parameter_tags)
     )
 }
 
-parsetServer <- function(id, inputpars){
+parsetServer <- function(id, inputpars, pars_is_list){
     moduleServer(
         id,
         function(input, output, session){
             reactive({
                 #browser()
-                pars <- switch(input$parset,
-                       inp = inputpars,
-                       onc = oncaea_par,
-                       cal = calanus_par)
+                if(pars_is_list){
+                    pars <- inputpars[[which(gsub(" ", "", names(parameters)) == input$parset)]]
+                }else{
+                    pars <- inputpars
+                }
+
                 if(input$modelt == "seas" & is.na(pars["Ks"])) pars <- c(pars, Ks = 0.5)
                 return(pars)
             })

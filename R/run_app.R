@@ -4,6 +4,7 @@ run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitu
     if(is.null(mod_name)){
         mod_name <- mod_str
     }
+    pars_is_list <- inherits(pars, "list")
 
     ui <- fluidPage(
 
@@ -22,7 +23,7 @@ run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitu
         sidebarLayout(
             sidebarPanel(
                 modelUI("parset"),
-                parsetUI("parset"),
+                parsetUI("parset", pars, pars_is_list),
                 titlePanel("Parameters"),
                 parsliderUI("parslider"),
                 width = 3, style = "overflow-y:scroll; max-height: 600px; position:relative;",
@@ -57,7 +58,7 @@ run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitu
     server <- function(input, output) {
 
         # react to input parameter set
-        parset <- parsetServer("parset", pars)
+        parset <- parsetServer("parset", pars, pars_is_list)
 
         # set up input sliders
         # scaling slider ranges to input size
