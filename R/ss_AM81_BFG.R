@@ -59,4 +59,5 @@ ss_AM81_BFG <- function(par) {
 ss_AM81_BFG_biomass <- function(par){
     state <- ss_AM81_BFG(par)
     state["W"] <- with(as.list(par), q^-1*state["W"])
+    return(state)
 }
