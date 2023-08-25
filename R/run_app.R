@@ -1,5 +1,5 @@
 #' @export
-run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitute(mod)), ...){
+run_app <- function(mod, pars, init, steady_fun = ss_AM81_BFG_biomass, mod_name = NULL, mod_str = deparse(substitute(mod)), ...){
 
     if(is.null(mod_name)){
         mod_name <- mod_str
@@ -86,7 +86,7 @@ run_app <- function(mod, pars, init, mod_name = NULL, mod_str = deparse(substitu
 
         # get current steady state
         steady <- reactive({
-            parasitemodels::ss_AM81_BFG(parameters())
+            steady_fun(parameters())
         })
 
         modl <- modelServer("parset", initial, parameters, mod, timesteps, mod_str)
