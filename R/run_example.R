@@ -7,10 +7,10 @@
 #'
 run_example <- function() {
     init <- c(
-        H = 1,
+        H = 0.05,
         Y = 0,
-        W = 0.1
+        W = 0.005
     )
 
-    run_app(AM81_BFG, oncaea_par, init)
+    run_app(AM81_BFG_biomass, parameters, init)
 }
