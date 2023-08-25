@@ -49,3 +49,14 @@ ss_AM81_BFG <- function(par) {
 
     return(c(H=H, Y=Y, W=W))
 }
+
+#' Analytical steady state of model B+F+G modified for biomass model
+
+#' @param par parameters of the model
+#'
+#' @return A named numeric vector with the steady state of the three state variables H, Y and W
+#' @export
+ss_AM81_BFG_biomass <- function(par){
+    state <- ss_AM81_BFG(par)
+    state["W"] <- with(as.list(par), q^-1*state["W"])
+}
