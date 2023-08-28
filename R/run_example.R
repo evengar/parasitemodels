@@ -12,5 +12,5 @@ run_example <- function() {
         W = 0.005
     )
 
-    run_app(AM81_BFG_biomass, parameters, init)
+    run_app(parasitemodels::AM81_BFG_biomass, parasitemodels::parameters, init, mod_name = "Copepod-parasite model")
 }
