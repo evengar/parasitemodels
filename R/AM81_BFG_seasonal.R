@@ -5,7 +5,7 @@
 
 #' @export
 
-AM81_BFG_seasonal <- function(t, x, parms){
+AM81_BFG_biomass_seasonal <- function(t, x, parms){
     with(as.list(c(parms,x)), {
 
         # K depends on day of year
