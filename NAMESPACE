@@ -2,7 +2,7 @@
 
 export(AM81_BFG)
 export(AM81_BFG_biomass)
-export(AM81_BFG_seasonal)
+export(AM81_BFG_biomass_seasonal)
 export(get_R0)
 export(get_R0_root)
 export(new_par)

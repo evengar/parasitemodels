@@ -25,9 +25,6 @@ parameters}
 
 \item{iter_name}{the name(s) of the parameters in \code{grid}}
 }
-\value{
-
-}
 \description{
 Vary multiple variables and find bifurcation point
 }

@@ -1,6 +1,6 @@
 #' Seasonal implementation of the BFG model
 #'
-#' @inheritParams AM81_BFG
+#' @inheritParams AM81_BFG_biomass
 #' @inherit AM81_BFG return description
 
 #' @export

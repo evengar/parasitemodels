@@ -51,10 +51,8 @@ root_var <- function(pars,
 #' parameters
 #' @param iter_name the name(s) of the parameters in `grid`
 #'
-#' @return
 #' @export
 #'
-#' @examples
 root_multi <- function(pars,
                        variable,
                        grid,
