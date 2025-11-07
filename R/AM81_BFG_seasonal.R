@@ -19,8 +19,8 @@ AM81_BFG_seasonal <- function(t, x, parms){
         # add a small magic number to prevent Kt from ever reaching 0
         Kt <- mid + amp * -cos(2 * pi * t/365) + 1e-5
 
-        dY = v*W*(H - Y) - (a + b + g)*Y
-        dW = L*(a + b + g)*Y - (m + v*H)*W
+        dY = (q)*v*W*(H - Y) - (a + b + g)*Y
+        dW = (q^-1)*L*(a + b + g)*Y - (m + v*H)*W
         dH = (r*(1 - (H/Kt)) - b)*H - (a + f*r*(1 - (H/Kt)))*Y
 
         return(list(c(dH, dY, dW)))
